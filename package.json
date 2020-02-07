@@ -5,15 +5,15 @@
   "main": "index.js",
   "dependencies": {
     "cssnano": "^4.1.10",
-    "typescript": "^3.7.3",
-    "build": "parcel build src/index.html --out-dir build --public-url ./"
+    "typescript": "^3.7.3"
   },
   "devDependencies": {
     "parcel": "^1.12.4"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "compile": "tsc"
+    "compile": "tsc",
+    "build": "parcel build src/index.html --out-dir build --public-url ./"
   },
   "repository": {
     "type": "git",
