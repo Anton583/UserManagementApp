@@ -13,7 +13,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "compile": "tsc",
-    "build": "parcel build src/index.html --out-dir build --public-url ./"
+    "build": "parcel build src/index.html --out-dir build --public-url ./",
+    "build-watch": "parcel watch src/index.html --out-dir build --public-url ./"
   },
   "repository": {
     "type": "git",
