@@ -1,4 +1,4 @@
-import { ButtonType, OnClickFn, getButtonByType, getInputField, clearPage, fillUsersTable } from './utilities'
+import { ButtonType, OnClickFn, getButtonByType, getInputField, clearPage, fillUsersTable, getResultField, makeP } from './utilities'
 import { searchCard, addCard, removeCard } from './cardOps'
 import users from './db/userStorage'
 

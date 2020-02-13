@@ -61,7 +61,7 @@ export const bindButtons = (bindings: Array<[ButtonType, OnClickFn]>) => {
     }
 }
 
-
+// Find a table element on a page and add all the supplied users as table rows
 export const fillUsersTable = (users: Array<User>) => {
     const table = document.getElementById("tInfoB")
     table.innerHTML = ""
@@ -70,10 +70,20 @@ export const fillUsersTable = (users: Array<User>) => {
         const dateOfBAsStr = (user.yearOfBirth).toString()
         const pavelDVisitsAsStr = (user.pavelDurovVisits).toString()
         const idAsStr = users.indexOf(user)
-        table.innerHTML += table.appendChild(document.createElement("tr")).innerHTML =
-            '<td class="col s3">' + userName + "</td>" +
-            '<td class="col s3">' + idAsStr + "</td>" +
-            '<td class="col s3">' + dateOfBAsStr + "</td>" +
-            '<td class="col s3">' + pavelDVisitsAsStr + "</td>"
+        if (user.surname) {
+            table.innerHTML += table.appendChild(document.createElement("tr")).innerHTML =
+                '<td class="col s3">' + userName + " " + user.surname + "</td>" +
+                '<td class="col s3">' + idAsStr + "</td>" +
+                '<td class="col s3">' + dateOfBAsStr + "</td>" +
+                '<td class="col s3">' + pavelDVisitsAsStr + "</td>"
+        }
+        else {
+            table.innerHTML += table.appendChild(document.createElement("tr")).innerHTML =
+                '<td class="col s3">' + userName + "</td>" +
+                '<td class="col s3">' + idAsStr + "</td>" +
+                '<td class="col s3">' + dateOfBAsStr + "</td>" +
+                '<td class="col s3">' + pavelDVisitsAsStr + "</td>"
+        }
+
     }
 }

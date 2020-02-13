@@ -1,3 +1,5 @@
+import users from "./userStorage";
+
 class User {
     name: string
     surname: string = ""
@@ -10,7 +12,9 @@ class User {
     }
 
     asString(): string {
-        return this.getUserName() + ", " + this.yearOfBirth + ", Pasha visited " + this.pavelDurovVisits + " times."
+        if (this.surname)
+            return this.getUserName() + " " + this.surname + ", " + this.yearOfBirth + ", Pasha visited " + this.pavelDurovVisits + " times."
+        else return this.getUserName() + ", " + this.yearOfBirth + ", Pasha visited " + this.pavelDurovVisits + " times."
     }
 
     setSurname(surname: string) {

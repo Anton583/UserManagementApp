@@ -1,43 +1,46 @@
-import { getResultField, makeP, } from './utilities'
-import { User, getUsersByIDs, findUsersByName, getUserId as getUserIDs, addUser } from './db/user'
+import { getResultField, makeP, fillUsersTable, getInputField } from './utilities'
+import { User, getUsersByIDs, findUsersByName, getUserId as getUserIDs, addUser, } from './db/user'
 
 type UserArray = Array<User>
 
 export const searchCard = (queryText: string, users: UserArray) => {
-    const searchResult: [number, User][] = getUsersByIDs(findUsersByName(queryText, users), users)
-    for (const [userID, user] of searchResult)
-        getResultField().innerHTML += makeP("ID: " + userID + " | " + user.asString())
+    const userArr: User[] = []
+    document.getElementById("hiddenDiv").style.display = "block"
+    for (const user of users)
+        if (user.name.toLowerCase().includes(queryText) || user.surname.toLowerCase().includes(queryText) === true) {
+            userArr.push(user)
+            fillUsersTable(userArr)
+        } if (userArr.length === 0)
+        getResultField().innerHTML = "No Users found!"
 }
 
 export const removeCard = (queryText: string, users: UserArray) => {
     const input: string = queryText.split(" ")[0]
     const userId: number = parseFloat(input)
-    if (typeof (userId) !== "number" || userId >= users.length)
-        getResultField().innerHTML = "Please, write the existing Id of user!"
+    document.getElementById("hiddenDiv").style.display = "block"
+    if (typeof (userId) === "number" && userId < users.length) {
+        const removed = users.splice(userId, 1)
+        fillUsersTable(users)
+        getResultField().innerHTML = makeP("Removed: ID: " + userId + " | " + removed[0].asString())
+        if (users.length === 0)
+            document.getElementById("hiddenDiv").style.display = "none"
+    }
     else {
-        users.splice(userId, 1)
-        const removeUser = getUsersByIDs(getUserIDs(users), users)
-        for (const [otherIds, user] of removeUser) {
-            getResultField().innerHTML += makeP("ID: " + otherIds + " | " + user.asString())
-
-        }
+        getResultField().innerHTML = "Please, write the existing Id of user!"
+        document.getElementById("hiddenDiv").style.display = "none"
     }
 }
-
 
 export const addCard = (queryText: string, users: UserArray) => {
     const newName: string = queryText.split(" ")[0]
     const newYearOfBirth: number = parseFloat(queryText.split(" ")[1])
     const input = newName + " " + newYearOfBirth
     if (queryText !== input) {
+        document.getElementById("hiddenDiv").style.display = "none"
         getResultField().innerHTML = "Please, write name, space bar, year of birth!"
         return
     }
-    const newUser: number = addUser(newName, newYearOfBirth, users)
-    const resOutput = getUsersByIDs([newUser], users)
-
-    for (const [userID, user] of resOutput)
-        if (queryText === input || typeof (parseFloat(newName)) === "number")
-            getResultField().innerHTML += makeP("ID: " + userID + " | " +
-                user.asString())
+    document.getElementById("hiddenDiv").style.display = "block"
+    addUser(newName, newYearOfBirth, users)
+    fillUsersTable(users)
 }
