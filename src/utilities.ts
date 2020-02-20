@@ -10,6 +10,8 @@ export enum ButtonType {
 
 }
 
+export const $ = ( id: string ) => document.getElementById( id )
+
 export const getResultField = () => document.getElementById( "queryResult" )
 export const getInputField = () => document.getElementById( "inputField" ) as HTMLInputElement
 
@@ -67,6 +69,12 @@ const _td = ( content: string ) => '<td class="col s3">' + content + "</td>"
 export const fillUsersTable = ( users: Array<User> ) => {
     const table = document.getElementById( "tInfoB" )
     table.innerHTML = ""
+
+    // Use hiddenDiv for results
+    $( "hiddenDiv" ).style.display = users.length ? "block" : "none"
+    // Notify if empty
+    getResultField().innerHTML = users.length ? "" : "No Users found!"
+
     for ( const user of users ) {
         const userName = user.name
         const dateOfBAsStr = ( user.yearOfBirth ).toString()

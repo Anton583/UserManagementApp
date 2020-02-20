@@ -1,56 +1,37 @@
-import { getInputField, clearPage, setSubmitButtonVisibility, bindButtons, fillUsersTable, getResultField, ButtonType, fillUsersTableWithCustomUserArr } from "./utilities"
+import { getInputField, clearPage, bindButtons, fillUsersTable, $ } from "./utilities"
 import { buttonBindings } from './bindings'
 import users from './db/userStorage'
-import { User } from './db/user'
+
+const lCaseIncludes = ( input: string, data: string ) => input.toLowerCase().includes( data )
+
+const filterOutUsers = ( [inName, inSurname]: [string, string] ) =>
+    // Return empty array whenever we should not be doing the search, or there is no data
+    ( $( "submitBtn" ).innerHTML !== "Search" ) || ( inName.length < 1 )
+        ? []
+        : users.filter( ( { name, surname } ) => inSurname
+            // Do boolean join differently depending on whether we have a surname or not
+            ? lCaseIncludes( name, inName ) && lCaseIncludes( surname, inSurname )
+            : lCaseIncludes( name, inName ) || lCaseIncludes( surname, inName ) )
 
 const bindInputField = () =>
-    getInputField().oninput = (ev: InputEvent) => {
-        const newInputValue = (ev.target as HTMLInputElement).value
-        if (newInputValue.length < 1) {
-            setSubmitButtonVisibility(false)
-            document.getElementById("hiddenDiv").style.display = "none"
-        } else {
-            setSubmitButtonVisibility(true)
-            if (document.getElementById("searchBtn").getAttribute("style") === null)
-                document.getElementById("hiddenDiv").style.display = "block"
-            const inputToLC: string = newInputValue.toLowerCase()
-            if (document.getElementById("submitBtn").innerHTML === "Search") {
-                const userArr: User[] = []
-                for (const user of users) {
-                    if (newInputValue.length > 0) {
-                        document.getElementById("hiddenDiv").style.display = "block"
-                        const possibleInpToLC = (inputToLC).toLowerCase()
-                        const devidedInp = possibleInpToLC.split(" ")
-                        const possName = devidedInp[0]
-                        const possSurname = devidedInp[1]
-                        const nameToLC = user.name.toLowerCase()
-                        const surnameToLC = user.surname.toLowerCase()
-                        // if name or surname contain input from input field, shows the results as table rows
-                        if (nameToLC.includes(inputToLC) === true || surnameToLC.includes(inputToLC) === true ||
-                            (nameToLC + " " + surnameToLC).includes(possName + " " + possSurname) === true) {
-                            // fill special array with found users
-                            userArr.push(user)
-                            // use special array as custom array to fill the table with users using the right ids 
-                            fillUsersTableWithCustomUserArr(userArr, users)
-                            getResultField().innerHTML = ""
-                        }
-                    }
-                }
-                if (userArr.length === 0) {
-                    document.getElementById("hiddenDiv").style.display = "none"
-                    getResultField().innerHTML = "No Users found!"
-                }
+    getInputField().oninput = ( { target } ) => {
+        // Extract and lowercase our value
+        const inputWords = ( target as HTMLInputElement )
+            .value
+            .toLowerCase()
+            .split( " ", 2 ) as [string, string]
+        // Filter out the users based on the words
+        const fittingUsers = filterOutUsers( inputWords )
 
-            }
-        }
+        // Fill a table with users, could be empty
+        // fill func handles the empty case.
+        fillUsersTable( fittingUsers )
     }
 
-(() => {
+( () => {
     clearPage()
-    bindButtons(buttonBindings)
-    document.getElementById("searchBtn").removeAttribute("style")
+    bindButtons( buttonBindings )
+    $( "searchBtn" ).removeAttribute( "style" )
 
     bindInputField()
-
-    // fillUsersTable(users)
-})()
+} )()
