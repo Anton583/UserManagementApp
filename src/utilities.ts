@@ -61,6 +61,7 @@ export const bindButtons = (bindings: Array<[ButtonType, OnClickFn]>) => {
     }
 }
 
+
 // Find a table element on a page and add all the supplied users as table rows
 export const fillUsersTable = (users: Array<User>) => {
     const table = document.getElementById("tInfoB")
@@ -69,21 +70,74 @@ export const fillUsersTable = (users: Array<User>) => {
         const userName = user.name
         const dateOfBAsStr = (user.yearOfBirth).toString()
         const pavelDVisitsAsStr = (user.pavelDurovVisits).toString()
-        const idAsStr = users.indexOf(user)
+        const userID = users.indexOf(user)
+        const tableRawEl = document.createElement("tr")
+        table.appendChild(tableRawEl)
         if (user.surname) {
-            table.innerHTML += table.appendChild(document.createElement("tr")).innerHTML =
+            tableRawEl.innerHTML +=
                 '<td class="col s3">' + userName + " " + user.surname + "</td>" +
-                '<td class="col s3">' + idAsStr + "</td>" +
+                '<td class="col s3">' + userID + "</td>" +
                 '<td class="col s3">' + dateOfBAsStr + "</td>" +
                 '<td class="col s3">' + pavelDVisitsAsStr + "</td>"
-        }
-        else {
-            table.innerHTML += table.appendChild(document.createElement("tr")).innerHTML =
+        } else {
+            tableRawEl.innerHTML +=
                 '<td class="col s3">' + userName + "</td>" +
-                '<td class="col s3">' + idAsStr + "</td>" +
+                '<td class="col s3">' + userID + "</td>" +
                 '<td class="col s3">' + dateOfBAsStr + "</td>" +
                 '<td class="col s3">' + pavelDVisitsAsStr + "</td>"
         }
 
+    }
+}
+// Find a table element on a page and add one user with right id as table row
+export const fillUsersTableWithRightId = (userId: number, users: Array<User>) => {
+    const table = document.getElementById("tInfoB")
+    table.innerHTML = ""
+    for (const user of users) {
+        const userName = user.name
+        const dateOfBAsStr = (user.yearOfBirth).toString()
+        const pavelDVisitsAsStr = (user.pavelDurovVisits).toString()
+        const tableRawEl = document.createElement("tr")
+        table.appendChild(tableRawEl)
+        if (user.surname) {
+            tableRawEl.innerHTML +=
+                '<td class="col s3">' + userName + " " + user.surname + "</td>" +
+                '<td class="col s3">' + userId + "</td>" +
+                '<td class="col s3">' + dateOfBAsStr + "</td>" +
+                '<td class="col s3">' + pavelDVisitsAsStr + "</td>"
+        } else {
+            tableRawEl.innerHTML +=
+                '<td class="col s3">' + userName + "</td>" +
+                '<td class="col s3">' + userId + "</td>" +
+                '<td class="col s3">' + dateOfBAsStr + "</td>" +
+                '<td class="col s3">' + pavelDVisitsAsStr + "</td>"
+        }
+
+    }
+}
+// Find a table element on a page and add all the found users with original ids as table rows
+export const fillUsersTableWithCustomUserArr = (userArr: User[], users: User[]) => {
+    const table = document.getElementById("tInfoB")
+    table.innerHTML = ""
+    for (const user of userArr) {
+        const userName = user.name
+        const dateOfBAsStr = (user.yearOfBirth).toString()
+        const pavelDVisitsAsStr = (user.pavelDurovVisits).toString()
+        const tableRawEl = document.createElement("tr")
+        const userID = users.indexOf(user)
+        table.appendChild(tableRawEl)
+        if (user.surname) {
+            tableRawEl.innerHTML +=
+                '<td class="col s3">' + userName + " " + user.surname + "</td>" +
+                '<td class="col s3">' + userID + "</td>" +
+                '<td class="col s3">' + dateOfBAsStr + "</td>" +
+                '<td class="col s3">' + pavelDVisitsAsStr + "</td>"
+        } else {
+            tableRawEl.innerHTML +=
+                '<td class="col s3">' + userName + "</td>" +
+                '<td class="col s3">' + userID + "</td>" +
+                '<td class="col s3">' + dateOfBAsStr + "</td>" +
+                '<td class="col s3">' + pavelDVisitsAsStr + "</td>"
+        }
     }
 }

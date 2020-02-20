@@ -12,9 +12,11 @@ class User {
     }
 
     asString(): string {
+        const firstPart = this.getUserName()
+        const secondPart = ", " + this.yearOfBirth + ", Pasha visited " + this.pavelDurovVisits + " times."
         if (this.surname)
-            return this.getUserName() + " " + this.surname + ", " + this.yearOfBirth + ", Pasha visited " + this.pavelDurovVisits + " times."
-        else return this.getUserName() + ", " + this.yearOfBirth + ", Pasha visited " + this.pavelDurovVisits + " times."
+            return firstPart + " " + this.surname + secondPart
+        else return firstPart + secondPart
     }
 
     setSurname(surname: string) {
@@ -68,7 +70,7 @@ class User {
 // Avatar link
 
 // addUser :: (name, yearOfBirth) -> id
-export const getUserId = (users: Array<User>) => {
+export const getUserIds = (users: Array<User>) => {
     const ids: Array<number> = []
     for (let user of users) {
         ids.push(users.indexOf(user));
