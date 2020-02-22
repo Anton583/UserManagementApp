@@ -1,0 +1,6 @@
+.cache
+build
+dist
+node_modules
+build.sh
+package-lock.json
