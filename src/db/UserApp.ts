@@ -1,5 +1,5 @@
-import { $ } from "../utilities";
-import users from "./userStorage";
+
+const $ = (id) => document.getElementById(id)
 
 // Puts all html code into main div
 const render = (html: string) => {
