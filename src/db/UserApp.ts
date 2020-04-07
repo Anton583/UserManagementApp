@@ -1,4 +1,3 @@
-
 const $ = (id) => document.getElementById(id)
 
 // Puts all html code into main div
@@ -97,6 +96,8 @@ const updateState = (state: Array<any[]>) => {
             QueryResult())
     render(body)
 
+
+
     for (const user of state) {
         const userName = (user[0] + " " + user[1])
         const userDateOfBirth = user[2]
@@ -108,34 +109,65 @@ const updateState = (state: Array<any[]>) => {
     const inputField = $("inputField") as HTMLInputElement
     const sbmtBtn = $("submitBtn")
     btns.splice(4, 1)
+    sbmtBtn.style.display = "none"
+
+
+
+
+    const clearPage = () => {
+        $("queryResult").innerHTML = ""
+        inputField.value = ""
+        sbmtBtn.style.display = "none"
+    }
+
+    inputField.oninput = () => {
+        if (inputField.value.length > 0)
+            sbmtBtn.style.display = "block"
+        else sbmtBtn.style.display = "none"
+    }
+
 
     for (const btn of btns) {
         btn.onclick = (e) => {
-            console.log(inputField.value)
             const clickedBtn = e.target as HTMLElement
-
             if (btns.indexOf(clickedBtn) === 3) {
                 $("hiddenDiv").style.display = "block"
                 inputField.style.display = "none"
-                sbmtBtn.style.display = "none"
+                btns[0].style.opacity = "50%"
+                btns[1].style.opacity = "50%"
+                btns[2].style.opacity = "50%"
+                btns[3].style.opacity = "100%"
+                clearPage()
             } else {
                 inputField.style.display = "block"
-                sbmtBtn.style.display = "block"
+                $("hiddenDiv").style.display = "none"
             }
 
             if (btns.indexOf(clickedBtn) === 1) {
                 sbmtBtn.innerHTML = "Add"
-                $("hiddenDiv").style.display = "none"
+                btns[0].style.opacity = "50%"
+                btns[2].style.opacity = "50%"
+                btns[3].style.opacity = "50%"
+                btns[1].style.opacity = "100%"
+                clearPage()
             }
 
             if (btns.indexOf(clickedBtn) === 0) {
                 sbmtBtn.innerHTML = "Search"
-                $("hiddenDiv").style.display = "none"
+                btns[1].style.opacity = "50%"
+                btns[2].style.opacity = "50%"
+                btns[3].style.opacity = "50%"
+                btns[0].style.opacity = "100%"
+                clearPage()
             }
 
             if (btns.indexOf(clickedBtn) === 2) {
                 sbmtBtn.innerHTML = "Remove"
-                $("hiddenDiv").style.display = "none"
+                btns[0].style.opacity = "50%"
+                btns[1].style.opacity = "50%"
+                btns[3].style.opacity = "50%"
+                btns[2].style.opacity = "100%"
+                clearPage()
             }
 
             if (sbmtBtn.innerHTML === "Add") {
@@ -148,12 +180,29 @@ const updateState = (state: Array<any[]>) => {
                     if (inputField.value === input) {
                         state.push([name, surname, dateOfBirth])
                         updateState(state)
+                    } else {
+                        inputField.value = ""
+                        sbmtBtn.style.display = "none"
+                        $("queryResult").innerHTML = QueryResultContent("Please, write Name, Surname and date of birth!")
+                    }
+                }
+            }
+            if (sbmtBtn.innerHTML === "Remove") {
+                sbmtBtn.onclick = (e) => {
+                    const input = parseFloat(inputField.value)
+                    if (state[input]) {
+                        state.splice(input, 1)
+                        $("queryResult").innerHTML = QueryResultContent("lol")
+                        updateState(state)
+                    } else {
+                        inputField.value = ""
+                        sbmtBtn.style.display = "none"
+                        $("queryResult").innerHTML = QueryResultContent("Please, write the existing ID of user")
                     }
                 }
             }
         }
     }
-
 }
 updateState([["Petr", "Stalinov", 1998], ["Slava", "Petrov", 2002], ["lol", "kelek", 231]])
 
