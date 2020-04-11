@@ -18,3 +18,4 @@ export function toArr(setOfElems: HTMLCollectionOf<Element>) {
         arr.push(setOfElems[index])
     return arr
 }
+

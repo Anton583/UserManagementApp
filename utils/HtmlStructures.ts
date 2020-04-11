@@ -10,6 +10,6 @@ export const DivsStructure = (...content: Array<string>) => DivWithClass("contai
 // Input field with submit button
 export const InputSubmitElems = (Inputplaceholder: string, btnName: string) => DivWithClass("row", DivCol4OffSet(`<input id="inputField" placeholder="${Inputplaceholder}">`), DivInputBtn(SubmBtn("submitBtn", btnName)))
 
-// Table
+// Table element structure
 export const Table = (...tHeadNames: Array<string>) => TableElem(Thead(tHeadNames.join("")), Tbody())
 
