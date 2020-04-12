@@ -1,6 +1,6 @@
 import { DivsStructure, InputSubmitElems, Table } from "../utils/HtmlStructures"
 import { Btn, Space, HiddenDiv, TheadName, QueryResult, TbodyContent, QueryResultContent } from "../utils/HtmlElems"
-import { $, render, toLCaseIncludes, setSbmtBtnVis, setHiddenDivVis, toArr } from "./variables/functions"
+import { $, render, toLCaseIncludes, toArr } from "./variables/functions"
 
 
 // Enum with members representing buttons on the top of the app
@@ -11,7 +11,7 @@ enum CurrentButton {
     ShowAll
 }
 
-const updateState = (keyState: Array<Array<any>>, state: CurrentButton) => {
+const updateState = (state: Array<any[]>) => {
     // The html structure of the app
     const body: string =
         DivsStructure(
@@ -23,8 +23,6 @@ const updateState = (keyState: Array<Array<any>>, state: CurrentButton) => {
             QueryResult())
     // Put body into the main div
     render(body)
-
-
     // Get query massage field
     const queryRes: HTMLElement = $("queryResult")
     // Get submit button
@@ -33,13 +31,6 @@ const updateState = (keyState: Array<Array<any>>, state: CurrentButton) => {
     const tBodyContent: HTMLElement = $("tInfoB")
     // Get input field
     const inputField: HTMLInputElement = $("inputField") as HTMLInputElement
-    // Set default on input function
-    const defaultOnInput = () => {
-        inputField.oninput = () => {
-            inputField.value.length > 0 ? setSbmtBtnVis("block")
-                : setSbmtBtnVis("none")
-        }
-    }
 
     // Get buttons on the top of the app 
     const upperBtns = () => {
@@ -47,60 +38,74 @@ const updateState = (keyState: Array<Array<any>>, state: CurrentButton) => {
         btns.splice(4, 1)
         return btns
     }
-
-    // Get rid of extra elements on the page
-    const clearPage = () => {
-        queryRes.innerHTML = ""
-        inputField.value = ""
-        setSbmtBtnVis("none")
-        tBodyContent.innerHTML = ""
-    }
-
-    // Set buttons style 
-    const setBtnStyle = (sbmtBtnInnerText: string, searchBtnOp: string, addBtnOp: string, removeBtnOp: string, showAllBtnOp: string) => {
-        sbmtBtn.innerHTML = sbmtBtnInnerText
-        upperBtns()[0].style.opacity = searchBtnOp
-        upperBtns()[1].style.opacity = addBtnOp
-        upperBtns()[2].style.opacity = removeBtnOp
-        upperBtns()[3].style.opacity = showAllBtnOp
+    // Get only current btn status from state 
+    const btnState = state[state.length - 1][0]
+    // Get only users from state
+    const users = () => {
+        const arrForUsers = []
+        for (const components of state) {
+            arrForUsers.push(components)
+        }
+        arrForUsers.pop()
+        return arrForUsers
     }
     // Set "CurrentButton" enum members functionality 
-    switch (state) {
+    switch (btnState) {
         case (CurrentButton.Search): {
-            clearPage()
-            defaultOnInput()
-            setHiddenDivVis("none")
+            queryRes.innerHTML = ""
+            inputField.value = ""
+            sbmtBtn.style.display = "none"
+            tBodyContent.innerHTML = ""
+            inputField.oninput = () => {
+                inputField.value.length > 0 ? sbmtBtn.style.display = "block"
+                    : sbmtBtn.style.display = "none"
+            }
+            $("hiddenDiv").style.display = "none"
             inputField.style.display = "block"
-            setBtnStyle("Search", "100%", "50%", "50%", "50%")
+            sbmtBtn.innerHTML = "Search"
+            upperBtns()[0].style.opacity = "100%"
+            upperBtns()[1].style.opacity = "50%"
+            upperBtns()[2].style.opacity = "50%"
+            upperBtns()[3].style.opacity = "50%"
             sbmtBtn.onclick = (e) => {
                 queryRes.innerHTML = ""
                 tBodyContent.innerHTML = ""
-                setHiddenDivVis("block")
+                $("hiddenDiv").style.display = "block"
                 const arrOfFoundUsers: Array<Array<any>> = []
-                for (const user of keyState)
+                for (const user of users())
                     // Check if input includes users info
                     if (toLCaseIncludes(user[0], inputField.value) || toLCaseIncludes(user[1], inputField.value) || toLCaseIncludes(user[0] + " " + user[1], inputField.value))
                         arrOfFoundUsers.push(user)
                 for (const userFound of arrOfFoundUsers) {
-                    setSbmtBtnVis("none")
+                    sbmtBtn.style.display = "none"
                     const userName: string = (userFound[0] + " " + userFound[1])
                     const userDateOfBirth: number = userFound[2]
-                    const userId: number = keyState.indexOf(userFound)
+                    const userId: number = users().indexOf(userFound)
                     tBodyContent.innerHTML += TbodyContent(userName, userId, userDateOfBirth)
                 } if (arrOfFoundUsers.length === 0) {
                     queryRes.innerHTML = ""
-                    setHiddenDivVis("none")
+                    $("hiddenDiv").style.display = "none"
                     queryRes.innerHTML += QueryResultContent("No users found!")
                 }
             }
             break
         }
         case (CurrentButton.Add): {
-            clearPage()
-            setHiddenDivVis("none")
+            queryRes.innerHTML = ""
+            inputField.value = ""
+            sbmtBtn.style.display = "none"
+            tBodyContent.innerHTML = ""
+            $("hiddenDiv").style.display = "none"
             inputField.style.display = "block"
-            setBtnStyle("Add", "50%", "100%", "50%", "50%")
-            defaultOnInput()
+            sbmtBtn.innerHTML = "Add"
+            upperBtns()[0].style.opacity = "50%"
+            upperBtns()[1].style.opacity = "100%"
+            upperBtns()[2].style.opacity = "50%"
+            upperBtns()[3].style.opacity = "50%"
+            inputField.oninput = () => {
+                inputField.value.length > 0 ? sbmtBtn.style.display = "block"
+                    : sbmtBtn.style.display = "none"
+            }
             // Set new on click function for the "Submit" button
             sbmtBtn.onclick = (e) => {
                 const inputValue: Array<string> = inputField.value.split(" ")
@@ -109,54 +114,70 @@ const updateState = (keyState: Array<Array<any>>, state: CurrentButton) => {
                 const dateOfBirth: number = parseInt(inputValue[2])
                 const expInput: string = name + " " + surname + " " + dateOfBirth
                 if (inputField.value === expInput) {
-                    setSbmtBtnVis("none")
-                    keyState.push([name, surname, dateOfBirth])
-                    queryRes.innerHTML = QueryResultContent("Added user: ID: " + (keyState.length - 1) + "; Full Name: " + (name + " " + surname) + "; Born in: " + dateOfBirth + ";")
+                    sbmtBtn.style.display = "none"
+                    state.splice(state.length - 1, 0, [name, surname, dateOfBirth])
+                    queryRes.innerHTML = QueryResultContent("Added user: ID: " + (users().length - 1) + "; Full Name: " + (name + " " + surname) + "; Born in: " + dateOfBirth + ";")
                     inputField.value = ""
                 } else {
                     inputField.value = ""
-                    setSbmtBtnVis("none")
+                    sbmtBtn.style.display = "none"
                     queryRes.innerHTML = QueryResultContent("Please, write Name, Surname and date of birth!")
                 }
             }
             break
         }
         case (CurrentButton.Remove): {
-            clearPage()
-            setHiddenDivVis("none")
+            queryRes.innerHTML = ""
+            inputField.value = ""
+            sbmtBtn.style.display = "none"
+            tBodyContent.innerHTML = ""
+            $("hiddenDiv").style.display = "none"
             inputField.style.display = "block"
-            defaultOnInput()
-            setBtnStyle("Remove", "50%", "50%", "100%", "50%")
+            inputField.oninput = () => {
+                inputField.value.length > 0 ? sbmtBtn.style.display = "block"
+                    : sbmtBtn.style.display = "none"
+            }
+            sbmtBtn.innerHTML = "Remove"
+            upperBtns()[0].style.opacity = "50%"
+            upperBtns()[1].style.opacity = "50%"
+            upperBtns()[2].style.opacity = "100%"
+            upperBtns()[3].style.opacity = "50%"
             sbmtBtn.onclick = (e: MouseEvent) => {
                 const expInput: number = parseFloat(inputField.value)
-                if (keyState[expInput]) {
-                    const removedUser: Array<Array<any>> = keyState.splice(expInput, 1)
+                if (users()[expInput]) {
+                    const removedUser: Array<Array<any>> = state.splice(expInput, 1)
                     queryRes.innerHTML = QueryResultContent("Removed user: ID: " + expInput + "; Full Name: " + removedUser[0][0] + " " + removedUser[0][1] + "; Born in: " + removedUser[0][2] + ";")
                     inputField.value = ""
                 } else {
                     inputField.value = ""
-                    setSbmtBtnVis("none")
+                    sbmtBtn.style.display = "none"
                     queryRes.innerHTML = QueryResultContent("Please, write the existing ID of user")
                 }
             }
             break
         }
         case (CurrentButton.ShowAll): {
-            setHiddenDivVis("block")
-            clearPage()
-            setBtnStyle("", "50%", "50%", "50%", "100%")
+            $("hiddenDiv").style.display = "block"
+            queryRes.innerHTML = ""
+            inputField.value = ""
+            sbmtBtn.style.display = "none"
+            tBodyContent.innerHTML = ""
+            upperBtns()[0].style.opacity = "50%"
+            upperBtns()[1].style.opacity = "50%"
+            upperBtns()[2].style.opacity = "50%"
+            upperBtns()[3].style.opacity = "100%"
             inputField.style.display = "none"
-            for (const user of keyState) {
+            for (const user of users()) {
                 // Get User full name
                 const userName: string = (user[0] + " " + user[1])
                 //Get User date of birth
                 const userDateOfBirth: number = user[2]
                 // Get ID of user
-                const userId: number = keyState.indexOf(user)
+                const userId: number = state.indexOf(user)
                 // Fill table with users info
                 tBodyContent.innerHTML += TbodyContent(userName, userId, userDateOfBirth)
-            } if (typeof (keyState[0]) == "undefined") {
-                setHiddenDivVis("none")
+            } if (typeof (users()) == "undefined") {
+                $("hiddenDiv").style.display = "none"
                 queryRes.innerHTML = QueryResultContent("No users left!")
             }
             break
@@ -167,17 +188,29 @@ const updateState = (keyState: Array<Array<any>>, state: CurrentButton) => {
     for (const btn of upperBtns()) {
         btn.onclick = (e: MouseEvent) => {
             const clickedBtn: HTMLElement = e.target as HTMLElement
-            if (upperBtns().indexOf(clickedBtn) === 0)
-                updateState(keyState, CurrentButton.Search)
-            if (upperBtns().indexOf(clickedBtn) === 1)
-                updateState(keyState, CurrentButton.Add)
-            if (upperBtns().indexOf(clickedBtn) === 2)
-                updateState(keyState, CurrentButton.Remove)
-            if (upperBtns().indexOf(clickedBtn) === 3)
-                updateState(keyState, CurrentButton.ShowAll)
+            if (upperBtns().indexOf(clickedBtn) === 0) {
+                state.pop()
+                state.push([CurrentButton.Search])
+                updateState(state)
+            }
+            if (upperBtns().indexOf(clickedBtn) === 1) {
+                state.pop()
+                state.push([CurrentButton.Add])
+                updateState(state)
+            }
+            if (upperBtns().indexOf(clickedBtn) === 2) {
+                state.pop()
+                state.push([CurrentButton.Remove])
+                updateState(state)
+            }
+            if (upperBtns().indexOf(clickedBtn) === 3) {
+                state.pop()
+                state.push([CurrentButton.ShowAll])
+                updateState(state)
+            }
         }
     }
 }
-updateState([["Petr", "Stalinov", 1998], ["Slava", "Petrov", 2002], ["lol", "kelek", 231]], CurrentButton.Search)
+updateState([["Petr", "Stalinov", 1998], ["Slava", "Petrov", 2002], ["Anton", "Codit", 2003], [CurrentButton.Search]])
 
 
