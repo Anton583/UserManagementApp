@@ -1,6 +1,7 @@
 import { DivsStructure, InputSubmitElems, Table } from "../utils/HtmlStructures"
 import { Btn, Space, HiddenDiv, TheadName, QueryResult, TbodyContent, QueryResultContent } from "../utils/HtmlElems"
 import { $, render, toLCaseIncludes, toArr } from "./variables/functions"
+import { unimplemented } from "./utils"
 
 
 // Enum with members representing buttons on the top of the app
@@ -12,7 +13,13 @@ enum CurrentButton {
 }
 
 class UserAppState {
-    // TODO here.
+    // TODO here (constructor, function bodies etc)
+    constructor( selectedButton: CurrentButton ) {
+        unimplemented();
+    }
+    addUser( name: String, surname: String, dateOfBirth: number ) {
+        unimplemented();
+    }
 }
 
 const updateState = ( state: UserAppState ) => {
@@ -215,6 +222,14 @@ const updateState = ( state: UserAppState ) => {
         }
     }
 }
-updateState( [["Petr", "Stalinov", 1998], ["Slava", "Petrov", 2002], ["Anton", "Codit", 2003], [CurrentButton.Search]] )
+
+// This is the app state that will be updated in the updateState() when we need to change something.
+let state = new UserAppState( CurrentButton.Search );
+
+state.addUser( "Petr", "Stalinov", 1998 );
+state.addUser( "Slava", "Petrov", 2002 );
+state.addUser( "Anton", "Codit", 2003 );
+
+updateState( state );
 
 
