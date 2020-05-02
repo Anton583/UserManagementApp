@@ -1,8 +1,6 @@
 import { DivsStructure, InputSubmitElems, Table } from "../utils/HtmlStructures"
 import { Btn, Space, HiddenDiv, TheadName, QueryResult, TbodyContent, QueryResultContent } from "../utils/HtmlElems"
 import { $, render, toLCaseIncludes, toArr } from "./variables/functions"
-import { unimplemented } from "./utils"
-
 
 // Enum with members representing buttons on the top of the app
 enum CurrentButton {
@@ -13,16 +11,22 @@ enum CurrentButton {
 }
 
 class UserAppState {
+    btnState: CurrentButton
+    users: Array<any> = []
+
     // TODO here (constructor, function bodies etc)
     constructor( selectedButton: CurrentButton ) {
-        unimplemented();
+        this.btnState = selectedButton
     }
     addUser( name: String, surname: String, dateOfBirth: number ) {
-        unimplemented();
+        this.users.push( [name, surname, dateOfBirth] )
     }
 }
 
+
+
 const updateState = ( state: UserAppState ) => {
+
     // The html structure of the app
     const body: string =
         DivsStructure(
@@ -34,6 +38,7 @@ const updateState = ( state: UserAppState ) => {
             QueryResult() )
     // Put body into the main div
     render( body )
+
     // Get query massage field
     const queryRes: HTMLElement = $( "queryResult" )
     // Get submit button
@@ -49,19 +54,8 @@ const updateState = ( state: UserAppState ) => {
         btns.splice( 4, 1 )
         return btns
     }
-    // Get only current btn status from state 
-    const btnState = state[state.length - 1][0]
-    // Get only users from state
-    const users = () => {
-        const arrForUsers = []
-        for ( const components of state ) {
-            arrForUsers.push( components )
-        }
-        arrForUsers.pop()
-        return arrForUsers
-    }
     // Set "CurrentButton" enum members functionality 
-    switch ( btnState ) {
+    switch ( state.btnState ) {
         case ( CurrentButton.Search ): {
             queryRes.innerHTML = ""
             inputField.value = ""
@@ -83,7 +77,7 @@ const updateState = ( state: UserAppState ) => {
                 tBodyContent.innerHTML = ""
                 $( "hiddenDiv" ).style.display = "block"
                 const arrOfFoundUsers: Array<Array<any>> = []
-                for ( const user of users() )
+                for ( const user of state.users )
                     // Check if input includes users info
                     if ( toLCaseIncludes( user[0], inputField.value ) || toLCaseIncludes( user[1], inputField.value ) || toLCaseIncludes( user[0] + " " + user[1], inputField.value ) )
                         arrOfFoundUsers.push( user )
@@ -91,8 +85,8 @@ const updateState = ( state: UserAppState ) => {
                     sbmtBtn.style.display = "none"
                     const userName: string = ( userFound[0] + " " + userFound[1] )
                     const userDateOfBirth: number = userFound[2]
-                    const userId: number = users().indexOf( userFound )
-                    tBodyContent.innerHTML += TbodyContent( userName, userId, userDateOfBirth )
+                    const userId: number = state.users.indexOf( userFound )
+                    tBodyContent.innerHTML = TbodyContent( userName, userId, userDateOfBirth )
                 } if ( arrOfFoundUsers.length === 0 ) {
                     queryRes.innerHTML = ""
                     $( "hiddenDiv" ).style.display = "none"
@@ -126,8 +120,8 @@ const updateState = ( state: UserAppState ) => {
                 const expInput: string = name + " " + surname + " " + dateOfBirth
                 if ( inputField.value === expInput ) {
                     sbmtBtn.style.display = "none"
-                    state.splice( state.length - 1, 0, [name, surname, dateOfBirth] )
-                    queryRes.innerHTML = QueryResultContent( "Added user: ID: " + ( users().length - 1 ) + "; Full Name: " + ( name + " " + surname ) + "; Born in: " + dateOfBirth + ";" )
+                    state.addUser( name, surname, dateOfBirth )
+                    queryRes.innerHTML = QueryResultContent( "Added user: ID: " + ( state.users.length - 1 ) + "; Full Name: " + ( name + " " + surname ) + "; Born in: " + dateOfBirth + ";" )
                     inputField.value = ""
                 } else {
                     inputField.value = ""
@@ -155,8 +149,8 @@ const updateState = ( state: UserAppState ) => {
             upperBtns()[3].style.opacity = "50%"
             sbmtBtn.onclick = ( e: MouseEvent ) => {
                 const expInput: number = parseFloat( inputField.value )
-                if ( users()[expInput] ) {
-                    const removedUser: Array<Array<any>> = state.splice( expInput, 1 )
+                if ( state.users[expInput] ) {
+                    const removedUser: Array<Array<any>> = state.users.splice( expInput, 1 )
                     queryRes.innerHTML = QueryResultContent( "Removed user: ID: " + expInput + "; Full Name: " + removedUser[0][0] + " " + removedUser[0][1] + "; Born in: " + removedUser[0][2] + ";" )
                     inputField.value = ""
                 } else {
@@ -178,16 +172,16 @@ const updateState = ( state: UserAppState ) => {
             upperBtns()[2].style.opacity = "50%"
             upperBtns()[3].style.opacity = "100%"
             inputField.style.display = "none"
-            for ( const user of users() ) {
+            for ( const user of state.users ) {
                 // Get User full name
                 const userName: string = ( user[0] + " " + user[1] )
                 //Get User date of birth
                 const userDateOfBirth: number = user[2]
                 // Get ID of user
-                const userId: number = state.indexOf( user )
+                const userId: number = state.users.indexOf( user )
                 // Fill table with users info
                 tBodyContent.innerHTML += TbodyContent( userName, userId, userDateOfBirth )
-            } if ( typeof ( users() ) == "undefined" ) {
+            } if ( typeof ( state.users ) == "undefined" ) {
                 $( "hiddenDiv" ).style.display = "none"
                 queryRes.innerHTML = QueryResultContent( "No users left!" )
             }
@@ -195,41 +189,42 @@ const updateState = ( state: UserAppState ) => {
         } default:
             console.warn( "Chegoo?" )
     }
-    // Update state depend on the button clicked
     for ( const btn of upperBtns() ) {
-        btn.onclick = ( e: MouseEvent ) => {
-            const clickedBtn: HTMLElement = e.target as HTMLElement
+        btn.onclick = ( e ) => {
+            const clickedBtn = e.target as HTMLElement
             if ( upperBtns().indexOf( clickedBtn ) === 0 ) {
-                state.pop()
-                state.push( [CurrentButton.Search] )
-                updateState( state )
+                state.btnState = CurrentButton.Search
+                const newObj = new UserAppState( state.btnState )
+                newObj.users = [...state.users]
+                updateState( newObj )
             }
             if ( upperBtns().indexOf( clickedBtn ) === 1 ) {
-                state.pop()
-                state.push( [CurrentButton.Add] )
-                updateState( state )
+                state.btnState = CurrentButton.Add
+                const newObj = new UserAppState( state.btnState )
+                newObj.users = [...state.users]
+                updateState( newObj )
             }
             if ( upperBtns().indexOf( clickedBtn ) === 2 ) {
-                state.pop()
-                state.push( [CurrentButton.Remove] )
-                updateState( state )
+                state.btnState = CurrentButton.Remove
+                const newObj = new UserAppState( state.btnState )
+                newObj.users = [...state.users]
+                updateState( newObj )
             }
             if ( upperBtns().indexOf( clickedBtn ) === 3 ) {
-                state.pop()
-                state.push( [CurrentButton.ShowAll] )
-                updateState( state )
+                state.btnState = CurrentButton.ShowAll
+                const newObj = new UserAppState( state.btnState )
+                newObj.users = [...state.users]
+                updateState( newObj )
             }
         }
     }
 }
 
 // This is the app state that will be updated in the updateState() when we need to change something.
-let state = new UserAppState( CurrentButton.Search );
-
-state.addUser( "Petr", "Stalinov", 1998 );
-state.addUser( "Slava", "Petrov", 2002 );
-state.addUser( "Anton", "Codit", 2003 );
-
-updateState( state );
+let state = new UserAppState( CurrentButton.Search )
+state.addUser( "Petr", "Stalinov", 1998 )
+state.addUser( "Slava", "Petrov", 2002 )
+state.addUser( "Anton", "Codit", 2003 )
 
 
+updateState( state )
