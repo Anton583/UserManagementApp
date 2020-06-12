@@ -22,7 +22,9 @@ export const SearchBtn = ( clickedBtn: CurrentButton ) => {
     let style: string
     if ( clickedBtn === CurrentButton.Search ) {
         style = "opacity: 100%"
-    } else style = "opacity:0.5"
+    } else {
+        style = "opacity:0.5"
+    }
     return `<a id="searchBtn"
     class="waves-effect  waves-light btn" style=${style}>
     Search
@@ -33,7 +35,9 @@ export const AddBtn = ( clickedBtn: CurrentButton ) => {
     let style: string
     if ( clickedBtn === CurrentButton.Add ) {
         style = "opacity: 100%"
-    } else style = "opacity:0.5"
+    } else {
+        style = "opacity:0.5"
+    }
     return `<a id="addBtn"
     class="waves-effect  waves-light btn" style=${style}>
     Add
@@ -45,7 +49,9 @@ export const RemoveBtn = ( clickedBtn: CurrentButton ) => {
     let style: string
     if ( clickedBtn === CurrentButton.Remove ) {
         style = "opacity: 100%"
-    } else style = "opacity:0.5"
+    } else {
+        style = "opacity:0.5"
+    }
     return `<a id="removeBtn"
     class="waves-effect  waves-light btn" style=${style}>
     Remove
@@ -55,7 +61,9 @@ export const ShowAllBtn = ( clickedBtn: CurrentButton ) => {
     let style: string
     if ( clickedBtn === CurrentButton.ShowAll ) {
         style = "opacity: 100%"
-    } else style = "opacity:0.5"
+    } else {
+        style = "opacity:0.5"
+    }
     return `<a id="showAllBtn"
     class="waves-effect  waves-light btn" style=${style}>
     Show All
