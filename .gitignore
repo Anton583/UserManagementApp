@@ -4,9 +4,3 @@ dist
 node_modules
 build.sh
 package-lock.json
-user.ts
-userStorage.ts
-app.ts
-bindings.ts
-cardOps.ts
-utilities.ts

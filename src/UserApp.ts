@@ -1,5 +1,5 @@
 import { DivsStructure } from "../utils/HtmlStructures"
-import { $, render, bIstoLCaseIncludes, toArr } from "./variables/functions"
+import { $, render, toLCaseDoesInclude, toArr } from "./variables/functions"
 
 
 // Enum with members representing buttons on the top of the app
@@ -54,13 +54,9 @@ export class UserAppState {
         }
     }
 }
-
-
-
-
 const updateState = ( state: UserAppState ) => {
     // The html structure of the app
-    let body =
+    const body =
         DivsStructure( state )
     // Put body into the main div
     render( body )
@@ -88,7 +84,7 @@ const updateState = ( state: UserAppState ) => {
                 // Show that submit button was clicked 
                 state.bIsSbmtClicked = true
                 for ( const user of state.users ) {
-                    if ( bIstoLCaseIncludes( user.name, inputField.value ) || bIstoLCaseIncludes( user.surname, inputField.value ) || bIstoLCaseIncludes( user.name + " " + user.surname, inputField.value ) )
+                    if ( toLCaseDoesInclude( user.name, inputField.value ) || toLCaseDoesInclude( user.surname, inputField.value ) || toLCaseDoesInclude( user.name + " " + user.surname, inputField.value ) )
                         // If any users found, put their info into foundUsers array
                         state.foundUsers.push( user )
                 }
@@ -109,7 +105,8 @@ const updateState = ( state: UserAppState ) => {
                 const dateOfBirth: number = parseInt( inputValue[2] )
                 // Set input order to check if input is relevant
                 const expInput: string = name + " " + surname + " " + dateOfBirth
-                if ( inputField.value === expInput ) {
+                // Check if the order of input is right and name or surname are not numbers 
+                if ( inputField.value === expInput && isNaN( parseInt( name ) ) === true && isNaN( parseInt( surname ) ) === true ) {
                     // Show that input is right
                     state.bIsExecutedRight = true
                     state.addUser( name, surname, dateOfBirth )
@@ -158,25 +155,29 @@ const updateState = ( state: UserAppState ) => {
     for ( const btn of getUpperBtns() ) {
         btn.onclick = ( e ) => {
             const clickedBtn = e.target as HTMLElement
+            // If clicked Search bbutton
             if ( getUpperBtns().indexOf( clickedBtn ) === 0 ) {
                 state.btnState = CurrentButton.Search
                 const newObj = new UserAppState( state.btnState )
                 newObj.users = [...state.users]
                 updateState( newObj )
             }
-            if ( getUpperBtns().indexOf( clickedBtn ) === 1 ) {
+            // if clicked Add button
+            else if ( getUpperBtns().indexOf( clickedBtn ) === 1 ) {
                 state.btnState = CurrentButton.Add
                 const newObj = new UserAppState( state.btnState )
                 newObj.users = [...state.users]
                 updateState( newObj )
             }
-            if ( getUpperBtns().indexOf( clickedBtn ) === 2 ) {
+            // if clicked Remove button
+            else if ( getUpperBtns().indexOf( clickedBtn ) === 2 ) {
                 state.btnState = CurrentButton.Remove
                 const newObj = new UserAppState( state.btnState )
                 newObj.users = [...state.users]
                 updateState( newObj )
             }
-            if ( getUpperBtns().indexOf( clickedBtn ) === 3 ) {
+            // if clicked Show All button
+            else if ( getUpperBtns().indexOf( clickedBtn ) === 3 ) {
                 state.btnState = CurrentButton.ShowAll
                 const newObj = new UserAppState( state.btnState )
                 newObj.users = [...state.users]

@@ -6,7 +6,7 @@ export const render = ( html: string ) => {
     MainDiv.innerHTML = html
 }
 // Check if string in lower case includes another string in lower case
-export const bIstoLCaseIncludes = ( data: string, equalTo: string ) => {
+export const toLCaseDoesInclude = ( data: string, equalTo: string ) => {
     if ( equalTo.length === 0 )
         return false
     return data.toLowerCase().includes( equalTo.toLowerCase() )
