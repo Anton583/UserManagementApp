@@ -60,7 +60,6 @@ const updateState = ( state: UserAppState ) => {
         DivsStructure( state )
     // Put body into the main div
     render( body )
-
     // Get buttons on the top of the app
     const getUpperBtns = () => {
         const btns: Array<HTMLElement> = toArr( document.getElementsByTagName( "a" ) )
@@ -73,7 +72,6 @@ const updateState = ( state: UserAppState ) => {
 
     // Get input field
     const inputField: HTMLInputElement = $( "inputField" ) as HTMLInputElement
-
 
     // Set "CurrentButton" enum members functionality 
     switch ( state.btnState ) {

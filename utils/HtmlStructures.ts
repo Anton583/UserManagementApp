@@ -1,4 +1,4 @@
-import { Tbody, DivWithClass, H1, DivInputBtn, TableElem, SubmBtn, Thead, QueryResult, QueryResultContent, TheadName, HiddenDiv, AddBtn, RemoveBtn, SearchBtn, ShowAllBtn, Space } from "./HtmlElems"
+import { Tbody, DivWithClass, H1, DivInputBtn, TableElem, Thead, QueryResult, QueryResultContent, TheadName, HiddenDiv, Space, NavButton, SubmBtn } from "./HtmlElems"
 import { CurrentButton, User, UserAppState } from "../src/UserApp"
 
 enum DivOffset {
@@ -23,11 +23,11 @@ export const DivsStructure = ( state: UserAppState ) => {
     // Output message Html basis
     const formalOutput = ( content: string ) => QueryResult( QueryResultContent( content ) )
     // App's top buttons structure
-    const topButtonsRow: string = ( SearchBtn( clickedBtn ) + " " + AddBtn( clickedBtn ) + " " + RemoveBtn( clickedBtn ) + " " + ShowAllBtn( clickedBtn ) + Space() )
+    const topButtonsRow: string = ( NavButton( CurrentButton.Search, "Search", "searchBtn", clickedBtn ) + " " + NavButton( CurrentButton.Add, "Add", "addBtn", clickedBtn ) + " " + NavButton( CurrentButton.Remove, "Remove", "removeBtn", clickedBtn ) + " " + NavButton( CurrentButton.ShowAll, "Show All", "showAllBtn", clickedBtn ) + Space() )
     // Input field structure
     const inputField = ( state.btnState !== CurrentButton.ShowAll ) ? InputSubmitElems( "Put your input here, please", clickedBtn ) : ""
     // According to current state decide what output to show
-    const switchOutput = ( ( state ) => {
+    const switchOutput = () => {
         switch ( clickedBtn ) {
             case CurrentButton.Search:
                 // Output if at least one user found
@@ -63,9 +63,8 @@ export const DivsStructure = ( state: UserAppState ) => {
                 return HiddenDiv( clickedBtn, users, state.bIsSbmtClicked, Table( TheadName( "Name" ), TheadName( "Id" ), TheadName( "Date of birth" ), Tbody( users, users ) ) )
         }
     }
-    )( state )
     // Final Html output
-    const content: Array<string> = [topButtonsRow, inputField, switchOutput]
+    const content: Array<string> = [topButtonsRow, inputField, switchOutput()]
     return DivWithClass( "containner",
         DivWithClass( "row",
             DivWithClass( "center-align",

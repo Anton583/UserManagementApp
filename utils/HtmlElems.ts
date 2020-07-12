@@ -11,46 +11,19 @@ export const DivWithClass = ( divClass: string, ...content: Array<string> ) => `
             ${content.join( "" )}
 </div>`
 
-export const SearchBtn = ( clickedBtn: CurrentButton ) => {
-    const style: string = ( clickedBtn === CurrentButton.Search )
-        ? "opacity: 100%"
+export const NavButton = ( btnType: CurrentButton, buttonText: string, id: string, currentClickedBtn: CurrentButton ) => {
+    // btnType is always the same and tells this button, what kind of button type it represents
+    // currentClickedBtn, on the other hand, is current state and will change as the application is used by the user
+    const style: string = ( currentClickedBtn === btnType )
+        ? "opacity:100%"
         : "opacity:0.5"
-    return `<a id="searchBtn"
-    class="waves-effect  waves-light btn" style=${style}>
-    Search
-</a>`
-}
 
-export const AddBtn = ( clickedBtn: CurrentButton ) => {
-    const style: string = ( clickedBtn === CurrentButton.Add )
-        ? "opacity: 100%"
-        : "opacity:0.5"
-    return `<a id="addBtn"
-    class="waves-effect  waves-light btn" style=${style}>
-    Add
-</a>`
-}
-
-export const RemoveBtn = ( clickedBtn: CurrentButton ) => {
-    const style: string =
-        ( clickedBtn === CurrentButton.Remove )
-            ? "opacity: 100%"
-            : "opacity:0.5"
-    return `<a id="removeBtn"
-    class="waves-effect  waves-light btn" style=${style}>
-    Remove
-</a>`
-}
-
-export const ShowAllBtn = ( clickedBtn: CurrentButton ) => {
-    const style: string = ( clickedBtn === CurrentButton.ShowAll )
-        ? "opacity: 100%"
-        : "opacity:0.5"
-    return `<a id="showAllBtn"
-    class="waves-effect  waves-light btn" style=${style}>
-    Show All
-</a>`
-
+    return `<a id="${id}"
+               class="waves-effect  waves-light btn"
+               style=${style}
+            >
+            ${buttonText}    
+            </a>`
 }
 
 // Submit button as html
