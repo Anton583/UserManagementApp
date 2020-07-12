@@ -6,63 +6,25 @@
 	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 	<!--Import materialize.css-->
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-
 	<!--Let browser know website is optimized for mobile-->
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 </head>
 
+
 <body>
-	<div class="container">
-		<div class="row">
-			<h1 class="center-align">User Library</h1>
-			<div class="col s8 offset-s2">
-				<div class="center-align">
-					<a id="searchBtn" class="waves-effect waves-light btn" style="opacity:0.5!important">Search</a>
-					<a id="addBtn" class="waves-effect waves-light btn" style="opacity:0.5!important">Add</a>
-					<a id="removeBtn" class="waves-effect waves-light btn" style="opacity:0.5!important">Remove</a>
-					<a id="showAllBtn" class="waves-effect waves-light btn" style="opacity:0.5!important">Show All</a>
-				</div>
-				<br>
-				<br>
-				<br>
-				<div class="row">
-					<div class="col s8 offset-s2">
-						<input id="inputField" placeholder="Write ur stuff here pls" type="text" name="queryInput">
-					</div>
-					<div class="col s2">
-						<a id="submitBtn" class="waves-effect waves-light btn red">Search</a>
-					</div>
+	<div id="app">
+		<style>
+			#red {
+				color: red;
+			}
+		</style>
 
-				</div>
-
-				<div id="hiddenDiv" hidden>
-					<table id="UTable" class="responsive-table">
-						<thead>
-							<tr>
-								<th class="col s3">Name</th>
-								<th class="col s3">Id</th>
-								<th class="col s3">Date Of Birth</th>
-								<th class="col s3">Pavel D. Visits</th>
-							</tr>
-						</thead>
-
-						<tbody id="tInfoB">
-
-						</tbody>
-					</table>
-				</div>
-				<div id="queryResult" class="col s8 offset-s2">
-					<p>Petr, 2002, Vlasov, 6</p>
-					<p>Stas, 1951, Petrov, 2</p>
-					<p>Slava, 1984, Vlavla, 0</p>
-				</div>
-			</div>
-		</div>
 	</div>
 
 	<!--JavaScript at end of body for optimized loading-->
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js">  </script>
-	<script src="app.ts"></script>
+	<script src="UserApp.ts"></script>
+
 </body>
 
 </html>
